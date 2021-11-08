@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<!-- saved from url=(0043)http://localhost:8080/FileManage/developer -->
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2">
+    <meta name="format-detection" content="telephone=no">
+    <title>农机管理平台</title>
+    <script src="/static/homepage/js/jquery-3.3.1.js"></script>
+    <script src="/static/homepage/js/base.js"></script>
+    <link href="/static/homepage/css/global-201905061503.css" rel="stylesheet" data-role="global">
+    <link href="/static/homepage/css/bee.css" rel="stylesheet" data-role="global">
+    <link href="/static/homepage/css/break.css" rel="stylesheet" data-role="global">
+    <link href="/static/homepage/css/monitor-sdk.css" rel="stylesheet" data-role="global">
+    <link href="/static/homepage/css/tea-0.0.7.min.css" rel="stylesheet" data-role="global">
+    <link href="/static/homepage/images/favicon.png" rel="icon" type="image/x-icon">
+    <link charset="utf-8" rel="stylesheet" href="/static/homepage/css/account-center.css"
+          class="developer-css developer_index-css">
+    <link charset="utf-8" rel="stylesheet" href="/static/homepage/css/global-mobile.import.css"
+          class="developer-css developer_index-css">
+    <style type="text/css">@keyframes fade-in {
+                               0% {
+                                   opacity: 0
+                               }
+                               100% {
+                               }
+                           }
+
+    .error-page h2 {
+        font-size: 40px;
+        font-weight: bold
+    }</style>
+    <link charset="utf-8" rel="stylesheet" href="/static/homepage/css/auth.css" class="developer_index-css">
+    <script>
+        $.ajax({
+            url: '/api/admin_info/',
+            type: 'GET',
+            data: {},
+            // headers: {'X-CSRFtoken': $.cookie('csrftoken') },
+            dataType: 'JSON',
+            success: function (result) {
+                $(".qc-user-name").eq(0).html("<em>" + result["data"]["username"] +
+                    "</em>");
+                $(".form-text").eq(0).html("<em>" + result["data"]["username"] +
+                    "</em>");
+                $(".form-text").eq(1).html("<em>" + result["data"]["aid"] +
+                    "</em>");
+                $(".form-text").eq(2).html("<em>" + result["data"]["wechat"] +
+                    "</em>");
+                $(".form-text").eq(3).html("<em>" + result["data"]["phone"] +
+                    "</em>");
+                $(".form-text").eq(4).html("<em>" + result["data"]["email"] +
+                    "</em>");
+            },
+            error: function (result) {
+                console.log("error: " + JSON.stringify(result));
+            }
+
+        });
+    </script>
+</head>
+<body style="">
+
+
+<div id="pageWrapper">
+    <div class="qc-header-nav" id="topnav">
+        <div class="qc-header-inner">
+            <div class="qc-header-unit qc-header-logo">
+                <div class="qc-nav-logo">
+                    <a target="_blank" class="qc-logo-inner" href="http://127.0.0.1:8000/work/manage/" title="返回首页"
+                       data-hot="header.qcloudid" data-event="hot_tag_link">
+                        <span class="qc-logo-icon">返回首页</span>
+                    </a>
+                </div>
+                <div class="qc-nav-mobile-user" data-event="top_user_mobile">
+                    <a class="qc-mobile-user-inner" href="javascript:void(0);" data-hot="m.header.user">
+                        <i></i>
+                    </a>
+                </div>
+                <div class="qc-nav-mobile-menu" data-event="top_submenu_mobile" data-hot="m.header.product">
+                    <div class="qc-mobile-menu-inner">
+                        <span></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="qc-nav-service" data-event="top_submenu" data-menu-type="product" data-menu-inited="true"
+                 id="J-top_submenu">
+                <div class="qc-service-inner">
+                    <div class="qc-service-tool">
+                        <span style="cursor:default" class="qc-service-text" id="t_product">系统功能</span>
+                        <i class="qc-nav-arrows" style=""></i>
+                    </div>
+                    <div class="qc-service-menu" id="productService" style="height: 800px;">
+                        <div class="qc-service-menu-inner"><i class="qc-service-icon J-headerProductClose"
+                                                              id="J-headerProductClose"></i>
+                            <div class="menu-list-search J-headerProductSearchBar">
+                                <div class="menu-search-tool"><input type="text"
+                                                                     class="menu-search-input J-productSearchInput"
+                                                                     id="menu-search"
+                                                                     placeholder="通过名称/关键字查找">
+                                    <button type="button" class="menu-search-btn"></button>
+                                </div>
+                                <ul class="menu-search-result J-searchList" style=""></ul>
+                            </div>
+                            <div class="menu-list-all J-headerProductList">
+                                <div class="menu-list-col">
+                                    <div class="menu-area J-headerProductGroup">
+                                        <div id="product_list_title_0" class="menu-area-tit"><em>Group 1</em></div>
+                                        <div class="menu-area-con" aria-labelledby="product_list_title_0"
+                                             tabindex="0" role="list">
+                                            <div class="menu-item">
+                                                <div class="menu-item-tit"><a
+                                                        href="http://127.0.0.1:8000/work/worklist/"
+                                                        data-event="nav" title="作业管理"
+                                                        data-hot="header.navigation.internal.cvm"><span
+                                                        class="menu-item-text">作业管理</span></a></div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                </div>
+
+                                <div class="menu-list-col">
+                                    <div class="menu-area J-headerProductGroup">
+                                        <div id="product_list_title_22" class="menu-area-tit"><em>Group 2</em></div>
+                                        <div class="menu-area-con" aria-labelledby="product_list_title_22"
+                                             tabindex="0" role="list">
+                                            <div class="menu-item" data-nav="nav_ai_image_face_recognition"
+                                                 style="">
+                                                <div class="menu-item-tit"><a
+                                                        href="http://127.0.0.1:8000/work/workstatistics/"
+                                                        data-event="nav" title="统计系统"
+                                                        data-hot="header.navigation.internal.aiface"><span
+                                                        class="menu-item-text">统计系统</span></a></div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="qc-header-unit qc-header-user">
+                <!--user start-->
+                <div class="qc-nav-user" data-event="top_submenu" data-menu-type="user" id="userInfo"
+                     data-menu-inited="true">
+                    <div class="qc-user-inner"><i class="qc-user-icon"></i><span class="qc-user-name"
+                                                                                 data-hot="header.user.center"
+                                                                                 title="g7">g7</span><i
+                            class="qc-nav-arrows"></i>
+                        <div class="qc-user-info qc-user-panel">
+                            <div class="qc-user-panel-inner J-dropdownPanel"><a
+                                    href="http://127.0.0.1:8000/work/manage/" data-event="nav"
+                                    data-hot="header.user.developer">账号信息</a> <a
+                                    href="http://localhost:8080/FileManage/security" data-event="nav"
+                                    data-hot="header.user.security">安全设置</a> <a
+                                    href="http://127.0.0.1:8000/user/logout" data-event="logout">退出</a></div>
+                        </div>
+                    </div>
+                </div>
+                <!--user end-->
+            </div>
+
+            <div class="qc-header-unit  qc-header-account">
+                <!--account start-->
+                <div class="qc-nav-account" data-event="top_submenu" data-menu-type="cost" data-menu-inited="true">
+                    <!--mobile account start-->
+
+
+                </div>
+                <!--account end-->
+
+                <!--workorder start-->
+
+                <!--workorder end-->
+            </div>
+            <div class="qc-header-unit  qc-header-tool">
+                <!--message start-->
+                <div class="qc-nav-message" data-event="top_submenu" id="message_trigger" data-menu-inited="true">
+                    <!--mobile message start-->
+                    <div class="qc-nav-mobile-message">
+                        <a href="http://localhost:8080/FileManage/message" data-event="nav" data-hot="m.header.message"
+                           class="J-msgLink">消息中心</a>
+                    </div>
+                    <!--mobile message- end-->
+                    <div class="qc-message-inner">
+                        <i class="qc-message-icon J-headerMsgIcon"><em style="visibility: hidden">0</em></i>
+                        <div class="qc-tool-message qc-tool-panel J-dropdownPanel" style="height: 750px;">
+                            <div class="qc-tool-inner" id="thisIsMsgCenter">
+                                <div class="qc-tool-head J-message-head"><h3 class="qc-tool-head-title">消息中心</h3><a
+                                        class="qc-tool-more" href="http://localhost:8080/FileManage/message"
+                                        data-event="nav" data-hot="header.message.more">查看更多</a><a
+                                        class="qc-tool-head-close J-closeMsgIcon"><i class="qc-close-panel"></i></a>
+                                </div>
+                                <div class="qc-tool-body J-message-body" style="height: 749px;">
+                                    <div class="qc-nav-message-list" id="message_list">
+                                        <div class="qc-tool-info">暂无未读消息</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--message end-->
+
+                <!--log start-->
+                <div class="qc-nav-log" data-event="top_submenu" id="operatelog_trigger"
+                     data-menu-inited="true">
+                    <!--mobile log start-->
+                    <div class="qc-nav-mobile-log">
+                        <a href="http://localhost:8080/FileManage/operatelog" data-event="nav"
+                           data-hot="m.header.operatelog">操作日志</a>
+                    </div>
+                    <!--mobile log end-->
+                    <div class="qc-log-inner">
+                        <i class="qc-log-icon J-headerLogIcon"></i>
+                        <div class="qc-tool-log qc-tool-panel J-dropdownPanel" style="height: 750px;">
+                            <div class="qc-tool-inner">
+                                <div class="qc-tool-head J-tool-head"><h3 class="qc-tool-head-title">最近操作</h3>        <a
+                                        class="qc-tool-more" href="http://localhost:8080/FileManage/cloudaudit"
+                                        data-event="nav" data-hot="header.operatelog.more">查看更多</a><a
+                                        class="qc-tool-head-close J-closeLogIcon" href="javascript:;"><i
+                                        class="qc-close-panel"></i></a></div>
+                                <div class="qc-tool-body J-operatelogList" style="height: 699px;">
+                                    <div class="qc-tool-info">暂无操作日志</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tip-msg-win floattips-container"></div>
+                </div>
+                <!--log end-->
+
+                <!--help start-->
+                <div class="qc-nav-help" data-event="top_submenu" id="help_trigger" data-menu-type="help"
+                     data-menu-inited="true">
+                    <!--mobile help start-->
+                    <div class="qc-nav-mobile-help">
+                        <a href="http://localhost:8080/FileManage/document/product" data-hot="m.header.document"
+                           target="_blank">帮助与文档<i class="menu-external-link"></i></a>
+                    </div>
+                    <!--mobile help end-->
+                    <div class="qc-help-inner">
+                        <i class="qc-help-icon J-headerHelpIcon"></i>
+                        <div class="qc-tool-help qc-tool-panel J-dropdownPanel" style="height: 750px;">
+                            <div class="qc-tool-inner J-headerHelpWrapper">
+                                <div class="qc-tool-head J-helper-head"><h3 class="qc-tool-head-title">帮助中心</h3>
+                                    <a class="qc-tool-head-close J-close-help-icon" href="javascript:;"><i
+                                            class="qc-close-panel"></i></a></div>
+                                <div class="qc-tool-body J-helper-body" style="height: 729px;">
+                                    <div class="qc-help-search-box"><input type="text" id="input_search_cont_help"
+                                                                           class="qc-help-search-cont"
+                                                                           placeholder="请输入您想了解或感兴趣的问题">
+                                        <button type="button" class="qc-help-search-btn"></button>
+                                    </div>
+                                    <div class="qc-question-list-wrap J-question-list">
+                                        <dl class="qc-question-list">
+                                            <dt>您可能需要</dt>
+                                            <dd><a class="external-link-help" data-type="2" target="_blank"
+                                                   href="#">常见操作指南</a>
+                                            </dd>
+                                            <dd><a class="external-link-help" data-type="2" target="_blank"
+                                                   href="#">登陆注册指引</a>
+                                            </dd>
+                                            <dd><a class="external-link-help" data-type="2" target="_blank"
+                                                   href="#">产品文档</a></dd>
+                                            <dd><a class="external-link-help" data-type="2" target="_blank"
+                                                   href="#">API文档</a>
+                                            </dd>
+                                        </dl>
+                                    </div>
+                                    <!-- <div class="qc-doc-video">      <ul class="J-video-list">          <li class="J-video-item">              <a class="qc-doc-video-box" href="https://www.qcloud.com/document/product" target="_blank">                  <img class="qc-doc-video-img" src="https://ask.qcloudimg.com/raw/qctrain/yehe-1932762cc356320/9xg6x4ak38.jpg?imageView2/format/jpg/q/80" data-video="//imgcache.qq.com/open_proj/proj_qcloud_v2/gateway/product/ugsv/css/img/demo/demo-1.mp4">                  <div class="qc-doc-video-title">云服务器配置介绍云服务器配置介绍</div>              </a>          </li>          <li class="J-video-item">              <a class="qc-doc-video-box" href="https://www.qcloud.com/document/product" target="_blank">                  <img class="qc-doc-video-img" src="https://ask.qcloudimg.com/raw/qctrain/yehe-1932762cc356320/9xg6x4ak38.jpg?imageView2/format/jpg/q/80">                  <div class="qc-doc-video-title">云服务器配置介绍</div>              </a>          </li>          <li class="J-video-item">              <a class="qc-doc-video-box" href="https://www.qcloud.com/document/product" target="_blank">                  <img class="qc-doc-video-img" src="https://ask.qcloudimg.com/raw/qctrain/yehe-1932762cc356320/9xg6x4ak38.jpg?imageView2/format/jpg/q/80">                  <div class="qc-doc-video-title">云服务器配置介绍</div>              </a>          </li>          <li class="J-video-item">              <a class="qc-doc-video-box" href="https://www.qcloud.com/document/product" target="_blank">                  <img class="qc-doc-video-img" src="https://ask.qcloudimg.com/raw/qctrain/yehe-1932762cc356320/9xg6x4ak38.jpg?imageView2/format/jpg/q/80">                  <div class="qc-doc-video-title">云服务器配置介绍</div>              </a>          </li>      </ul>      <a href="javascript:;" class="qc-doc-video-more">更多视频</a>  </div> -->
+                                </div>
+                                <div class="qc-tool-foot qc-doc-video-foot J-helper-footer"><a class="qc-help-service"
+                                                                                               target="_blank"
+                                                                                               href="http://localhost:8080/FileManage/marty?from=helpcenter"><i></i>智能客服</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--help end-->
+            </div>
+        </div>
+    </div>
+    <div class="qc-animation-empty container container-developer" id="container" style="left: 0px;">
+        <div class="aside qc-aside-new" id="sidebar">
+            <div class="qc-aside-area">
+                <div class="qc-aside-area-main"><h2 class="qc-aside-headline"><img class="qc-aside-service-icon"
+                                                                                   src="/static/homepage/images/user.svg"><span>农机管理平台</span>
+                </h2>
+
+                    <ul class="qc-aside-list def-scroll keyboard-focus-obj">
+                        <li tabindex="0" data-nav-dropdown="1" data-nav="nav_serviceMigrate" style=""><a
+                                class="qc-aside-level-1 " href="javascript:;"
+                                data-event="sidebar_accordion"><img
+                                class="qc-aside-icon" src="/static/homepage/images/developer.svg"><img
+                                class="qc-aside-icon qc-aside-icon-select"
+                                src="/static/homepage/images/developer(1).svg"><span>作业管理</span><i
+                                class="qc-aside-up-icon">开</i></a>
+                            <ul class="qc-aside-subitem" id="clerk">
+                                <li data-nav="nav_serviceMigrate" style=""><a class="qc-aside-level-2" data-event="nav"
+                                                                              href="http://127.0.0.1:8000/work/worklist/"
+                                                                              target="_self"><span>查看作业信息</span></a>
+                                </li>
+                                <li data-nav="nav_serviceMigrate" style=""><a class="qc-aside-level-2" data-event="nav"
+                                                                              href="http://127.0.0.1:8000/work/workroute/"
+                                                                              target="_self"><span>查看作业轨迹</span></a>
+                                </li>
+                                <li data-nav="nav_serviceMigrate" style=""><a class="qc-aside-level-2" data-event="nav"
+                                                                              href="http://127.0.0.1:8000/work/worksearch/"
+                                                                              target="_self"><span>搜索作业</span></a>
+                                </li>
+
+                            </ul>
+                        </li>
+
+                        <li><a class="qc-aside-level-1 qc-aside-select" data-event="nav"
+                               href="http://127.0.0.1:8000/work/workstatistics/" target="_self"><img
+                                class="qc-aside-icon" src="/static/homepage/images/developer.svg"><img
+                                class="qc-aside-icon qc-aside-icon-select"
+                                src="/static/homepage/images/developer(1).svg"><span>统计系统</span></a></li>
+                        <li><a class="qc-aside-level-1 qc-aside-select" data-event="nav"
+                               href="http://127.0.0.1:8000/work/manage/" target="_self"><img
+                                class="qc-aside-icon" src="/static/homepage/images/developer.svg"><img
+                                class="qc-aside-icon qc-aside-icon-select"
+                                src="/static/homepage/images/developer(1).svg"><span>账号信息</span></a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="qc-menu-fold" data-event="toggle_sidebar" data-hot="sidebar.toggle.new"><i></i></div>
+            <div class="tc-15-bubble tc-15-bubble-bottom qc-menu-tip J-newSidebarToggleTip" style="display: none">
+                <div class="tc-15-bubble-inner">点击收起侧导航<a href="javascript:;" data-event="hideNewSidebarToggleTip"
+                                                          class="qc-menu-tip-close"></a></div>
+            </div>
+        </div>
+        <div class="main" id="appArea">
+            <div id="developer-index" class="tea-page-root">
+                <div class="manage-area auth-info-page">
+                    <div class="manage-area-title"><h2>账号信息</h2></div>
+                    <div class="manage-area-main">
+                        <div class="manage-area-main-inner">
+                            <div class="tc-g panelgroup">
+                                <div class="tc-g-u-1-1">
+                                    <div class="tc-panel">
+                                        <div class="tc-panel-hd">
+                                            <div class="col"><h3 class="title">基本信息</h3></div>
+                                        </div>
+                                        <div class="tc-panel-bd">
+                                            <div class="tc-g with-divider">
+                                                <div class="tc-g-u-1-3 border-right">
+                                                    <div class="param-box ">
+                                                        <div class="param-bd">
+                                                            <ul class="form-list">
+                                                                <li class="pure-text-row pure-text-row">
+                                                                    <div class="form-label"><label>账号</label></div>
+                                                                    <div class="form-input">
+                                                                        <div class="form-unit">
+                                                                            <div class="form-text">g7<a
+                                                                                    href="javascript:;" class="ml-5"><i
+                                                                                    class="pencil-icon"></i></a></div>
+                                                                            <input class="tea-input" value="g7"
+                                                                                   style="display: none; width: 128px;">
+                                                                        </div>
+                                                                    </div>
+                                                                </li>
+                                                                <li class="pure-text-row pure-text-row">
+                                                                    <div class="form-label"><label>账号ID</label></div>
+                                                                    <div class="form-input">
+                                                                        <div class="form-unit">
+                                                                            <div class="form-text">100000619591</div>
+                                                                        </div>
+                                                                    </div>
+                                                                </li>
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="tc-g-u-2-3 matchheight">
+                                                    <div class="param-box ">
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tc-g panelgroup">
+                                <div class="tc-g-u-2-3">
+                                    <div class="tc-panel">
+                                        <div class="tc-panel-hd">
+                                            <div class="col"><h3 class="title">登录方式</h3></div>
+                                        </div>
+                                        <div class="tc-panel-bd"><p class="text-label mb-20"></p>
+                                            <div class="tc-g with-divider">
+                                                <div class="tc-g-u-1-2">
+                                                    <div class="param-box qq-box">
+                                                        <div class="param-bd">
+                                                            <ul class="form-list">
+                                                                <li class="pure-text-row pure-text-row">
+                                                                    <div class="form-label"><label>微信(注册方式)</label>
+                                                                    </div>
+                                                                    <div class="form-input">
+                                                                        <div class="form-unit">
+                                                                            <div class="form-text"><span>g7</span>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </li>
+                                                                <li class="pure-text-row pure-text-row">
+                                                                    <div class="form-label"><label>手机号码</label></div>
+                                                                    <div class="form-input">
+                                                                        <div class="form-unit">
+                                                                            <div class="form-text">无<a
+                                                                                    href="javascript:;"
+                                                                                    class="tc-link-btn">绑定</a></div>
+                                                                        </div>
+                                                                    </div>
+                                                                </li>
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="tc-g-u-1-2">
+                                                    <div class="param-box ">
+                                                        <div class="param-bd">
+                                                            <ul class="form-list">
+                                                                <li class="pure-text-row pure-text-row">
+                                                                    <div class="form-label"><label>邮箱</label></div>
+                                                                    <div class="form-input">
+                                                                        <div class="form-unit">
+                                                                            <div class="form-text">无<a
+                                                                                    href="javascript:;"
+                                                                                    class="tc-link-btn">绑定</a></div>
+                                                                        </div>
+                                                                    </div>
+                                                                </li>
+                                                                <li class="pure-text-row pure-text-row">
+                                                                    <div class="form-label"><label>微信公众平台</label></div>
+                                                                    <div class="form-input">
+                                                                        <div class="form-unit">
+                                                                            <div class="form-text">无<a
+                                                                                    href="javascript:;"
+                                                                                    class="tc-link-btn">绑定</a></div>
+                                                                        </div>
+                                                                    </div>
+                                                                </li>
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="tc-g-u-1-3">
+                                    <div class="tc-panel">
+                                        <div class="tc-panel-hd">
+                                            <div class="col"><h3 class="title">账号权限</h3></div>
+                                        </div>
+                                        <div class="tc-panel-bd"><p class="text-label mb-20"></p>
+                                            <div class="param-box ">
+                                                <div class="param-bd">
+                                                    <ul class="form-list">
+                                                        <li class="pure-text-row pure-text-row">
+                                                            <div class="form-label"><label>账号身份</label></div>
+                                                            <div class="form-input">
+                                                                <div class="form-unit">
+                                                                    <div class="form-text">主账号</div>
+                                                                </div>
+                                                            </div>
+                                                        </li>
+                                                        <li class="pure-text-row pure-text-row">
+                                                            <div class="form-label"><label>账号权限</label></div>
+                                                            <div class="form-input">
+                                                                <div class="form-unit">
+                                                                    <div class="form-text">所有权限<a
+                                                                            href="http://localhost:8080/FileManage/cam/overview"
+                                                                            class="tc-link-btn" target="_blank">权限设置</a>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

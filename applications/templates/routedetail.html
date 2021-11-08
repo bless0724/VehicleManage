@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<!-- saved from url=(0072)http://localhost:8080/FileManage/workorder/detail?ticketId=201907143261 -->
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2">
+    <meta name="format-detection" content="telephone=no">
+    <title>轨迹显示</title>
+    <script src="/static/homepage/js/jquery-3.3.1.js"></script>
+    <script src="/static/homepage/js/base.js"></script>
+    <script src="/static/homepage/js/raphael-2.1.4.min.js"></script>
+    <script src="/static/homepage/js/justgage.js"></script>
+    <script src="http://code.highcharts.com/highcharts.js"></script>
+    <script type="text/javascript"
+            src="http://api.map.baidu.com/getscript?v=2.0&ak=tePSRqOampaxYDUS3lYAYVyLrcdXIa3L&services=&t=20200327103013">
+    </script>
+    <script>
+        $.ajax({
+            url: '/api/admin_info/',
+            type: 'GET',
+            data: {},
+            // headers: {'X-CSRFtoken': $.cookie('csrftoken') },
+            dataType: 'JSON',
+            success: function (result) {
+                $(".qc-user-name").eq(0).html("<em>" + result["data"]["username"] +
+                    "</em>");
+            },
+            error: function (result) {
+                console.log("error: " + JSON.stringify(result));
+            }
+
+        });
+    </script>
+
+    <link href="/static/homepage/css/global-201905061503.css" rel="stylesheet" data-role="global">
+    <link href="/static/homepage/css/bee.css" rel="stylesheet" data-role="global">
+    <link href="/static/homepage/css/break.css" rel="stylesheet" data-role="global">
+    <link href="/static/homepage/css/monitor-sdk.css" rel="stylesheet" data-role="global">
+    <link href="/static/homepage/css/tea-0.0.7.min.css" rel="stylesheet" data-role="global">
+    <link href="/static/homepage/images/favicon.png" rel="icon" type="image/x-icon">
+    <style>
+        .onfocus-item {
+            border: 1px solid #a5c7fe !important;
+        }
+
+        .container {
+            transform: none;
+            transition: none;
+            height: auto;
+        }
+
+        .container.animate {
+            transition: left 0.3s;
+            transform: translate3d(0, 0, 0);
+        }
+
+        [data-region-selector].tc-15-dropdown-in-hd .tc-15-dropdown-menu {
+            max-height: none;
+        }
+
+
+    </style>
+    <style type="text/css">@keyframes fade-in {
+                               0% {
+                                   opacity: 0
+                               }
+                               100% {
+                               }
+                           }
+
+    @-webkit-keyframes fade-in {
+        0% {
+            opacity: 0
+        }
+        100% {
+        }
+    }
+
+    @keyframes fade-out {
+        0% {
+        }
+        100% {
+            opacity: 0
+        }
+    }
+
+    @-webkit-keyframes fade-out {
+        0% {
+        }
+        100% {
+            opacity: 0
+        }
+    }
+
+    @keyframes modal-in {
+        0% {
+            opacity: 0;
+            transform: scale(0.8, 0.8);
+            -moz-transform: scale(0.8, 0.8);
+            -webkit-transform: scale(0.8, 0.8);
+            -ms-transform: scale(0.8, 0.8);
+        }
+        100% {
+        }
+    }
+
+    @-webkit-keyframes modal-in {
+        0% {
+            opacity: 0;
+            transform: scale(0.8, 0.8);
+            -moz-transform: scale(0.8, 0.8);
+            -webkit-transform: scale(0.8, 0.8);
+            -ms-transform: scale(0.8, 0.8);
+        }
+        100% {
+        }
+    }
+
+    @keyframes modal-out {
+        0% {
+        }
+        100% {
+            transform: scale(0.8, 0.8);
+            -moz-transform: scale(0.8, 0.8);
+            -webkit-transform: scale(0.8, 0.8);
+            -ms-transform: scale(0.8, 0.8);
+            opacity: 0
+        }
+    }
+
+    @-webkit-keyframes modal-out {
+        0% {
+        }
+        100% {
+            transform: scale(0.8, 0.8);
+            -moz-transform: scale(0.8, 0.8);
+            -webkit-transform: scale(0.8, 0.8);
+            -ms-transform: scale(0.8, 0.8);
+            opacity: 0
+        }
+    }
+
+    .mask-in {
+        animation: fade-in 0.2s;
+        -webkit-animation: fade-in 0.2s;
+    }
+
+    .mask-out {
+        animation: fade-out 0.2s;
+        -webkit-animation: fade-out 0.2s;
+    }
+
+    .modal-in {
+        animation: modal-in 0.15s;
+        -webkit-animation: modal-in 0.15s;
+    }
+
+    .modal-out {
+        animation: modal-out 0.15s;
+        -webkit-animation: modal-out 0.15s;
+    }
+
+    .fade-in {
+        animation: fade-in 0.3s;
+        -webkit-animation: fade-in 0.3s;
+    }
+
+    .fade-out {
+        animation: fade-out 0.3s;
+        -webkit-animation: fade-out 0.3s;
+    }
+
+    .error-page {
+        width: 800px;
+        text-align: center;
+        margin: 100px auto 0;
+        padding: 50px;
+        font-size: 18px;
+        line-height: 1.5;
+        color: #999;
+        border: 1px solid #e0e0e0;
+        background-color: #fff;
+    }
+
+    .error-page h2 {
+        font-size: 40px;
+        font-weight: bold
+    }</style>
+    <style type="text/css">
+        .tc-15-table-panel .text-center a {
+            vertical-align: baseline;
+        }
+    </style>
+    <style type="text/css">
+        .modal-in {
+            animation: modal-in 0.20s;
+        }
+
+        .modal-out {
+            animation: modal-out 0.20s;
+        }
+
+        @keyframes modal-in {
+            0% {
+                opacity: 0;
+                transform: scale(0.8, 0.8);
+                -moz-transform: scale(0.8, 0.8);
+            }
+            100% {
+            }
+        }
+
+        @keyframes modal-out {
+            0% {
+            }
+            100% {
+                transform: scale(0.8, 0.8);
+                -moz-transform: scale(0.8, 0.8);
+                opacity: 0;
+            }
+        }
+    </style>
+
+    <style type="text/css">
+        html {
+            height: 100%
+        }
+
+        body {
+            height: 100%;
+            margin: 0px;
+            padding: 0px
+        }
+
+        #controller {
+            width: 100%;
+            border-bottom: 3px outset;
+            height: 4%;
+            filter: alpha(Opacity=100);
+            -moz-opacity: 1;
+            opacity: 1;
+            z-index: 10000;
+            background-color: lightblue;
+        }
+
+        #map {
+            height: 61%
+        }
+
+        #gauge {
+            float: left;
+            width: 50%;
+            height: 35%;
+        }
+
+        #bing {
+            float: left;
+            width: 50%;
+            height: 35%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    </style>
+</head>
+<body onload="init()">
+<div id="pageWrapper">
+    <div class="qc-header-nav" id="topnav">
+        <div class="qc-header-inner">
+            <div class="qc-header-unit qc-header-logo">
+                <div class="qc-nav-logo">
+                    <a target="_blank" class="qc-logo-inner" href="http://localhost:8080/FileManage" title="返回首页"
+                       data-hot="header.qcloudid" data-event="hot_tag_link">
+                        <span class="qc-logo-icon">返回首页</span>
+                    </a>
+                </div>
+                <div class="qc-nav-mobile-user" data-event="top_user_mobile">
+                    <a class="qc-mobile-user-inner" href="javascript:void(0);" data-hot="m.header.user">
+                        <i></i>
+                    </a>
+                </div>
+                <div class="qc-nav-mobile-menu" data-event="top_submenu_mobile" data-hot="m.header.product">
+                    <div class="qc-mobile-menu-inner">
+                        <span></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="qc-nav-service" data-event="top_submenu" data-menu-type="product" data-menu-inited="true"
+                 id="J-top_submenu">
+                <div class="qc-service-inner">
+                    <div class="qc-service-tool">
+                        <span style="cursor:default" class="qc-service-text" id="t_product">系统功能</span>
+                        <i class="qc-nav-arrows" style=""></i>
+                    </div>
+                    <div class="qc-service-menu" id="productService" style="height: 800px;">
+                        <div class="qc-service-menu-inner"><i class="qc-service-icon J-headerProductClose"
+                                                              id="J-headerProductClose"></i>
+                            <div class="menu-list-search J-headerProductSearchBar">
+                                <div class="menu-search-tool"><input type="text"
+                                                                     class="menu-search-input J-productSearchInput"
+                                                                     id="menu-search"
+                                                                     placeholder="通过名称/关键字查找">
+                                    <button type="button" class="menu-search-btn"></button>
+                                </div>
+                                <ul class="menu-search-result J-searchList" style=""></ul>
+                            </div>
+                            <div class="menu-list-all J-headerProductList">
+                                <div class="menu-list-col">
+                                    <div class="menu-area J-headerProductGroup">
+                                        <div id="product_list_title_0" class="menu-area-tit"><em>Group 1</em></div>
+                                        <div class="menu-area-con" aria-labelledby="product_list_title_0"
+                                             tabindex="0" role="list">
+                                            <div class="menu-item">
+                                                <div class="menu-item-tit"><a
+                                                        href="http://127.0.0.1:8000/work/worklist/"
+                                                        data-event="nav" title="作业管理"
+                                                        data-hot="header.navigation.internal.cvm"><span
+                                                        class="menu-item-text">作业管理</span></a></div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                </div>
+
+                                <div class="menu-list-col">
+                                    <div class="menu-area J-headerProductGroup">
+                                        <div id="product_list_title_22" class="menu-area-tit"><em>Group 2</em></div>
+                                        <div class="menu-area-con" aria-labelledby="product_list_title_22"
+                                             tabindex="0" role="list">
+                                            <div class="menu-item" data-nav="nav_ai_image_face_recognition"
+                                                 style="">
+                                                <div class="menu-item-tit"><a
+                                                        href="http://127.0.0.1:8000/work/workstatistics"
+                                                        data-event="nav" title="统计系统"
+                                                        data-hot="header.navigation.internal.aiface"><span
+                                                        class="menu-item-text">统计系统</span></a></div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="qc-header-unit qc-header-user">
+                <!--user start-->
+                <div class="qc-nav-user" data-event="top_submenu" data-menu-type="user" id="userInfo"
+                     data-menu-inited="true">
+                    <div class="qc-user-inner"><i class="qc-user-icon"></i><span class="qc-user-name"
+                                                                                 data-hot="header.user.center"
+                                                                                 title="g7">g7</span><i
+                            class="qc-nav-arrows"></i>
+                        <div class="qc-user-info qc-user-panel">
+                            <div class="qc-user-panel-inner J-dropdownPanel"><a
+                                    href="http://127.0.0.1:8000/work/manage/" data-event="nav"
+                                    data-hot="header.user.developer">账号信息</a> <a
+                                    href="http://localhost:8080/FileManage/security" data-event="nav"
+                                    data-hot="header.user.security">安全设置</a> <a
+                                    href="http://127.0.0.1:8000/user/logout" data-event="logout">退出</a></div>
+                        </div>
+                    </div>
+                </div>
+                <!--user end-->
+            </div>
+
+            <div class="qc-header-unit  qc-header-account">
+                <!--account start-->
+
+                <!--account end-->
+
+                <!--workorder start-->
+
+                <!--workorder end-->
+            </div>
+            <div class="qc-header-unit  qc-header-tool">
+                <!--message start-->
+                <div class="qc-nav-message" data-event="top_submenu" id="message_trigger" data-menu-inited="true">
+                    <!--mobile message start-->
+                    <div class="qc-nav-mobile-message">
+                        <a href="http://localhost:8080/FileManage/message" data-event="nav" data-hot="m.header.message"
+                           class="J-msgLink">消息中心</a>
+                    </div>
+                    <!--mobile message- end-->
+                    <div class="qc-message-inner">
+                        <i class="qc-message-icon J-headerMsgIcon"><em style="visibility: hidden">0</em></i>
+                        <div class="qc-tool-message qc-tool-panel J-dropdownPanel" style="height: 750px;">
+                            <div class="qc-tool-inner" id="thisIsMsgCenter">
+                                <div class="qc-tool-head J-message-head"><h3 class="qc-tool-head-title">消息中心</h3><a
+                                        class="qc-tool-more" href="http://localhost:8080/FileManage/message"
+                                        data-event="nav" data-hot="header.message.more">查看更多</a><a
+                                        class="qc-tool-head-close J-closeMsgIcon"><i class="qc-close-panel"></i></a>
+                                </div>
+                                <div class="qc-tool-body J-message-body" style="height: 749px;">
+                                    <div class="qc-nav-message-list" id="message_list">
+                                        <div class="qc-tool-info">暂无未读消息</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--message end-->
+
+                <!--log start-->
+                <div class="qc-nav-log" data-event="top_submenu" id="operatelog_trigger"
+                     data-menu-inited="true">
+                    <!--mobile log start-->
+                    <div class="qc-nav-mobile-log">
+                        <a href="http://localhost:8080/FileManage/operatelog" data-event="nav"
+                           data-hot="m.header.operatelog">操作日志</a>
+                    </div>
+                    <!--mobile log end-->
+                    <div class="qc-log-inner">
+                        <i class="qc-log-icon J-headerLogIcon"></i>
+                        <div class="qc-tool-log qc-tool-panel J-dropdownPanel" style="height: 750px;">
+                            <div class="qc-tool-inner">
+                                <div class="qc-tool-head J-tool-head"><h3 class="qc-tool-head-title">最近操作</h3>        <a
+                                        class="qc-tool-more" href="http://localhost:8080/FileManage/cloudaudit"
+                                        data-event="nav" data-hot="header.operatelog.more">查看更多</a><a
+                                        class="qc-tool-head-close J-closeLogIcon" href="javascript:;"><i
+                                        class="qc-close-panel"></i></a></div>
+                                <div class="qc-tool-body J-operatelogList" style="height: 699px;">
+                                    <div class="qc-tool-info">暂无操作日志</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tip-msg-win floattips-container"></div>
+                </div>
+                <!--log end-->
+
+                <!--help start-->
+                <div class="qc-nav-help" data-event="top_submenu" id="help_trigger" data-menu-type="help"
+                     data-menu-inited="true">
+                    <!--mobile help start-->
+                    <div class="qc-nav-mobile-help">
+                        <a href="http://localhost:8080/FileManage/document/product" data-hot="m.header.document"
+                           target="_blank">帮助与文档<i class="menu-external-link"></i></a>
+                    </div>
+                    <!--mobile help end-->
+                    <div class="qc-help-inner">
+                        <i class="qc-help-icon J-headerHelpIcon"></i>
+                        <div class="qc-tool-help qc-tool-panel J-dropdownPanel" style="height: 750px;">
+                            <div class="qc-tool-inner J-headerHelpWrapper">
+                                <div class="qc-tool-head J-helper-head"><h3 class="qc-tool-head-title">帮助中心</h3>
+                                    <a class="qc-tool-head-close J-close-help-icon" href="javascript:;"><i
+                                            class="qc-close-panel"></i></a></div>
+                                <div class="qc-tool-body J-helper-body" style="height: 729px;">
+                                    <div class="qc-help-search-box"><input type="text" id="input_search_cont_help"
+                                                                           class="qc-help-search-cont"
+                                                                           placeholder="请输入您想了解或感兴趣的问题">
+                                        <button type="button" class="qc-help-search-btn"></button>
+                                    </div>
+                                    <div class="qc-question-list-wrap J-question-list">
+                                        <dl class="qc-question-list">
+                                            <dt>您可能需要</dt>
+                                            <dd><a class="external-link-help" data-type="2" target="_blank"
+                                                   href="#">常见操作指南</a>
+                                            </dd>
+                                            <dd><a class="external-link-help" data-type="2" target="_blank"
+                                                   href="#">登陆注册指引</a>
+                                            </dd>
+                                            <dd><a class="external-link-help" data-type="2" target="_blank"
+                                                   href="#">产品文档</a></dd>
+                                            <dd><a class="external-link-help" data-type="2" target="_blank"
+                                                   href="#">API文档</a>
+                                            </dd>
+                                        </dl>
+                                    </div>
+                                    <!-- <div class="qc-doc-video">      <ul class="J-video-list">          <li class="J-video-item">              <a class="qc-doc-video-box" href="https://www.qcloud.com/document/product" target="_blank">                  <img class="qc-doc-video-img" src="https://ask.qcloudimg.com/raw/qctrain/yehe-1932762cc356320/9xg6x4ak38.jpg?imageView2/format/jpg/q/80" data-video="//imgcache.qq.com/open_proj/proj_qcloud_v2/gateway/product/ugsv/css/img/demo/demo-1.mp4">                  <div class="qc-doc-video-title">云服务器配置介绍云服务器配置介绍</div>              </a>          </li>          <li class="J-video-item">              <a class="qc-doc-video-box" href="https://www.qcloud.com/document/product" target="_blank">                  <img class="qc-doc-video-img" src="https://ask.qcloudimg.com/raw/qctrain/yehe-1932762cc356320/9xg6x4ak38.jpg?imageView2/format/jpg/q/80">                  <div class="qc-doc-video-title">云服务器配置介绍</div>              </a>          </li>          <li class="J-video-item">              <a class="qc-doc-video-box" href="https://www.qcloud.com/document/product" target="_blank">                  <img class="qc-doc-video-img" src="https://ask.qcloudimg.com/raw/qctrain/yehe-1932762cc356320/9xg6x4ak38.jpg?imageView2/format/jpg/q/80">                  <div class="qc-doc-video-title">云服务器配置介绍</div>              </a>          </li>          <li class="J-video-item">              <a class="qc-doc-video-box" href="https://www.qcloud.com/document/product" target="_blank">                  <img class="qc-doc-video-img" src="https://ask.qcloudimg.com/raw/qctrain/yehe-1932762cc356320/9xg6x4ak38.jpg?imageView2/format/jpg/q/80">                  <div class="qc-doc-video-title">云服务器配置介绍</div>              </a>          </li>      </ul>      <a href="javascript:;" class="qc-doc-video-more">更多视频</a>  </div> -->
+                                </div>
+                                <div class="qc-tool-foot qc-doc-video-foot J-helper-footer"><a class="qc-help-service"
+                                                                                               target="_blank"
+                                                                                               href="http://localhost:8080/FileManage/marty?from=helpcenter"><i></i>智能客服</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--help end-->
+            </div>
+        </div>
+    </div>
+    <div class="qc-animation-empty container container-workorder-detail" id="container" style="left: 0px;">
+        <div class="aside qc-aside-new" id="sidebar">
+            <div class="qc-aside-area">
+                <div class="qc-aside-area-main"><h2 class="qc-aside-headline"><img class="qc-aside-service-icon"
+                                                                                   src="/static/homepage/images/user.svg"><span>农机管理平台</span>
+                </h2>
+                    <ul class="qc-aside-list def-scroll keyboard-focus-obj">
+                        <li tabindex="0" data-nav-dropdown="1" data-nav="nav_serviceMigrate" style=""><a
+                                class="qc-aside-level-1 qc-aside-select" href="javascript:;"
+                                data-event="sidebar_accordion"><img
+                                class="qc-aside-icon" src="/static/homepage/images/developer.svg"><img
+                                class="qc-aside-icon qc-aside-icon-select"
+                                src="/static/homepage/images/developer(1).svg"><span>作业管理</span><i
+                                class="qc-aside-up-icon">开</i></a>
+                            <ul class="qc-aside-subitem" id="clerk">
+                                <li data-nav="nav_serviceMigrate" style=""><a class="qc-aside-level-2" data-event="nav"
+                                                                              href="http://127.0.0.1:8000/work/worklist/"
+                                                                              target="_self"><span>查看作业信息</span></a>
+                                </li>
+                                <li data-nav="nav_serviceMigrate" style=""><a class="qc-aside-level-2" data-event="nav"
+                                                                              href="http://127.0.0.1:8000/work/workroute/"
+                                                                              target="_self"><span>查看作业轨迹</span></a>
+                                </li>
+                                <li data-nav="nav_serviceMigrate" style=""><a class="qc-aside-level-2" data-event="nav"
+                                                                              href="http://127.0.0.1:8000/work/worksearch/"
+                                                                              target="_self"><span>搜索作业</span></a>
+                                </li>
+
+                            </ul>
+                        </li>
+
+
+                        <li><a class="qc-aside-level-1" data-event="nav"
+                               href="http://127.0.0.1:8000/work/workstatistics/" target="_self"><img
+                                class="qc-aside-icon" src="/static/homepage/images/developer.svg"><img
+                                class="qc-aside-icon qc-aside-icon-select"
+                                src="/static/homepage/images/developer(1).svg"><span>统计系统</span></a></li>
+                        <li><a class="qc-aside-level-1" data-event="nav"
+                               href="http://127.0.0.1:8000/work/manage/" target="_self"><img
+                                class="qc-aside-icon" src="/static/homepage/images/developer.svg"><img
+                                class="qc-aside-icon qc-aside-icon-select"
+                                src="/static/homepage/images/developer(1).svg"><span>账号信息</span></a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="qc-menu-fold" data-event="toggle_sidebar" data-hot="sidebar.toggle.new"><i></i></div>
+            <div class="tc-15-bubble tc-15-bubble-bottom qc-menu-tip J-newSidebarToggleTip" style="display: none">
+                <div class="tc-15-bubble-inner">点击收起侧导航<a href="javascript:;" data-event="hideNewSidebarToggleTip"
+                                                          class="qc-menu-tip-close"></a></div>
+            </div>
+        </div>
+        <div class="main" id="appArea">
+            <div class="manage-area" style="">
+                <div class="manage-area-title secondary-title"><a href="javascript:;" target="" title=""
+                                                                  class="back-link"><i class="btn-back-icon"></i></a>
+                    <h2>
+                        轨迹显示
+                    </h2>
+                    <input id="back" type="button" value="返回上一页" style="position: absolute;top:30%;" onclick="javascript:history.back(-1);">
+                </div>
+            </div>
+            <div class="manage-area-main secondary-main work-order-main">
+                <div id="controller" align="center">
+                    <input id="follow" type="checkbox"><span style="font-size:12px;">画面跟随</span></input>
+                    <input id="play" type="button" value="播放" onclick="play();" disabled/>
+                    <input id="pause" type="button" value="暂停" onclick="pause();" disabled/>
+                    <input id="reset" type="button" value="重置" onclick="reset();" disabled/>
+                    <input id="finish" type="button" value="结束" onclick="finish();" disabled/>
+                </div>
+                <div id="map"></div>
+                <div id="gauge"></div>
+                <div id="bing">
+                    <input id="finish" type="button" style="background:#006eff ;color:#ffffff" class="btn btn-default" value="进行作业评价" onclick="evaluatework();">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
+
+
+<script type="text/javascript">
+
+    var n_clusters_, timework, timetotal;
+    var p = [];
+    var labels = [];
+    var data = [];
+    var speed = [];
+    var map;   //百度地图对象
+    var car;   //汽车图标
+    var label; //信息标签
+    var centerPoint;
+    var timer;     //定时器
+    var index = 0; //记录播放到第几个point
+
+    var followChk, playBtn, pauseBtn, resetBtn, finishBtn, evaluateBtn; //几个控制按钮
+
+    var g = new JustGage({
+        id: "gauge",
+        value: 0,
+        min: 0,
+        max: 15,
+        title: "行驶速度",
+        label: "KM/H"
+    });
+
+    var color = ['red', 'blue', 'green', 'yellow'];
+
+    $.ajax({
+        url: '/api/route_detail/',
+        type: 'GET',
+        async: false,
+        data: {id: window.location.href.split("/")[5]},
+        // headers: {'X-CSRFtoken': $.cookie('csrftoken') },
+        dataType: 'JSON',
+        success: function (result) {
+            n_clusters_ = JSON.parse(result["n_clusters_"]);
+            p = JSON.parse(result["point"]);
+            labels = JSON.parse(result["labels"]);
+            data = JSON.parse(result["data"]);
+            timework = JSON.parse(result["timework"]);
+            timetotal = JSON.parse(result["timetotal"]);
+            speed = JSON.parse(result["speed"]);
+        },
+        error: function (result) {
+            console.log("error: " + JSON.stringify(result));
+        }
+
+    });
+    var points = new Array(p.length);
+    console.log(p.length);
+    for (var i = 0; i < p.length; i++) {
+        points[i] = new BMap.Point(p[i][0], p[i][1]);
+    }
+    console.log(points);
+
+    function init() {
+        followChk = document.getElementById("follow");
+        playBtn = document.getElementById("play");
+        pauseBtn = document.getElementById("pause");
+        resetBtn = document.getElementById("reset");
+        finishBtn = document.getElementById("finish");
+        evaluateBtn = document.getElementById("evaluatework");
+        //初始化地图,选取第一个点为起始点
+        map = new BMap.Map("map");
+        map.centerAndZoom(points[0], 15);
+        map.enableScrollWheelZoom();
+        map.addControl(new BMap.NavigationControl());
+        map.addControl(new BMap.ScaleControl());
+        map.addControl(new BMap.OverviewMapControl({isOpen: true}));
+        centerPoint = new BMap.Point((points[0].lng + points[points.length - 1].lng) / 2, (points[0].lat + points[points.length - 1].lat) / 2);
+        map.panTo(centerPoint);
+        console.log(centerPoint);
+        //连接所有点
+        map.addOverlay(new BMap.Polyline(points, {strokeColor: "black", strokeWeight: 5, strokeOpacity: 1}));
+        //显示小车子
+        label = new BMap.Label("", {offset: new BMap.Size(-20, -20)});
+        car = new BMap.Marker(points[0]);
+        car.setLabel(label);
+        map.addOverlay(car);
+
+        //点亮操作按钮
+        playBtn.disabled = false;
+        resetBtn.disabled = false;
+        finishBtn.disabled = false;
+    }
+
+
+    function play() {
+        playBtn.disabled = true;
+        pauseBtn.disabled = false;
+        finishBtn.disabled = false;
+
+        var point = points[index];
+        if (index > 0) {
+            map.addOverlay(new BMap.Polyline([points[index - 1], point], {
+                strokeColor: color[labels[index]],
+                strokeWeight: 2,
+                strokeOpacity: 1
+            }));
+        }
+        label.setContent("经度: " + point.lng + "<br>纬度: " + point.lat);
+        g.refresh(speed[index]);
+        car.setPosition(point);
+        index++;
+        if (followChk.checked) {
+            map.panTo(point);
+        }
+        if (index < points.length) {
+            timer = window.setTimeout("play(" + index + ")", 200);
+        } else {
+            playBtn.disabled = true;
+            pauseBtn.disabled = true;
+            map.panTo(point);
+        }
+    }
+
+    function pause() {
+        playBtn.disabled = false;
+        pauseBtn.disabled = true;
+        finishBtn.disabled = false;
+        if (timer) {
+            window.clearTimeout(timer);
+        }
+    }
+
+    function reset() {
+        followChk.checked = false;
+        playBtn.disabled = false;
+        pauseBtn.disabled = true;
+        finishBtn.disabled = false;
+        if (timer) {
+            window.clearTimeout(timer);
+        }
+        index = 0;
+        g.refresh(speed[index]);
+        map.addOverlay(new BMap.Polyline(points, {strokeColor: "black", strokeWeight: 5, strokeOpacity: 1}));
+        car.setPosition(points[0]);
+        map.panTo(centerPoint);
+    }
+
+    function finish() {
+        followChk.checked = false;
+        playBtn.disabled = true;
+        pauseBtn.disabled = true;
+        finishBtn.disabled = true;
+        resetBtn.disabled = false;
+        if (timer) {
+            window.clearTimeout(timer);
+        }
+        index = points.length - 1;
+        g.refresh(speed[index]);
+        for (var i = 0; i < points.length - 1; i++) {
+            map.addOverlay(new BMap.Polyline([points[i], points[i + 1]], {
+                strokeColor: color[labels[i]],
+                strokeWeight: 2,
+                strokeOpacity: 1
+            }));
+        }
+        car.setPosition(points[points.length - 1]);
+        map.panTo(points[points.length - 1]);
+    }
+
+    function evaluatework() {
+        var chart;
+        chart = new Highcharts.Chart({
+            chart: {
+                renderTo: 'bing'
+            },
+            title: {
+                text: '作业轨迹评价',
+                style: {
+                    fontSize: "20px",   //字体大小知
+                    fontWeight: 'bold',
+                },
+            },
+            plotArea: {
+                shadow: null,
+                borderWidth: null,
+                backgroundColor: null
+            },
+            tooltip: {
+                formatter: function () {
+                    return '<b>' + this.point.name + '</b>: ' + Highcharts.numberFormat(this.percentage, 1) + '% (' +
+                        Highcharts.numberFormat(this.y, 0, ',') + ' 秒)';
+                }
+            },
+            plotOptions: {
+                pie: {
+                    allowPointSelect: true,
+                    cursor: 'pointer',
+                    dataLabels: {
+                        enabled: true,
+                        formatter: function () {
+                            if (this.percentage > 4) return this.point.name;
+                        },
+                        color: 'white',
+                        style: {
+                            font: '13px Trebuchet MS, Verdana, sans-serif'
+                        }
+                    }
+                }
+            },
+            legend: {
+                backgroundColor: '#FFFFFF',
+                x: 0,
+                y: -30
+            },
+            credits: {
+                enabled: false
+            },
+            series: [{
+                type: 'pie',
+                size: '100%',
+                data: [
+                    ['有效作业时间', timework],
+                    ['无效作业时间', timetotal - timework]
+                ]
+            }]
+        });
+    }
+
+</script>

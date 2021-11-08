@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<!-- saved from url=(0043)http://localhost:8080/FileManage/workorder -->
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2">
+    <meta name="format-detection" content="telephone=no">
+    <title>作业搜索</title>
+    <script src="/static/homepage/js/jquery-3.3.1.js"></script>
+    <script src="/static/homepage/js/base.js"></script>
+    <script type="text/javascript">
+        var speedMark = _speedMark = new Date();
+        window._enableReport = true;
+        window.serverTimeForPlatformUsageOnly = (function (s, c) {
+            return function () {
+                return +new Date() + s - c;
+            }
+        })(1563092780785, +new Date());
+        window.lifeId = "ryH4wwubB";
+        window.lifeStart = serverTimeForPlatformUsageOnly();
+        window.qcLoginSdkUrl = "https://imgcache.qq.com/qcloud/main/scripts/release/common/login/api.bfc27ab1bd1911b65056.js?max_age=31536000";
+        // window._cosdp = /^(https?:)?\/\/(img\.qcloud\.com|imgcache\.qq\.com)/; // 支持跨域脚本协议的域名
+        window._cosdp = /$.^/; // 禁用跨域头
+        window.LOGIN_INFO = {
+            "loginUin": 100006710252,
+            "ownerUin": 100006710252,
+            "appId": 1257210837,
+            "identity": {"subjectType": 0, "authType": 4, "authArea": 0},
+            "area": 1,
+            "countryName": "CN",
+            "countryCode": "86"
+        };
+    </script>
+    <script>
+
+        {# 搜索，与事件中函数的完全相同 #}
+
+        function search(page) {
+            $.ajax({
+                url: '/api/work_search/',
+                type: 'GET',
+                data: {"carid":$("#carid").val(),"worktype":$("#worktype").val(),"page": page},
+                dataType: 'JSON',
+                success: function (result) {
+                    render(result)
+                },
+                error: function (result) {
+                    console.log("error: " + JSON.stringify(result));
+                }
+            });
+        }
+
+        function previous(page) {
+            page = page - 1;
+            search(page);
+        }
+
+        {# 下一页 #}
+
+        function next(page) {
+            page = page + 1;
+            console.log(page);
+            search(page);
+        }
+
+        function render(result) {
+            console.log(result);
+            $("#appeallist").empty();
+            $.each(result["data"], function (i, val) {
+
+                var card = "<tr data-tips=\"\">\n" +
+                    "                                            <td colspan=\"1\">\n" +
+                    "                                                <div>" + val["id"] +
+                    "</div>\n" +
+                    "                                            </td>\n" +
+                    "                                            <td colspan=\"1\">\n" +
+                    "                                                <div>" + val["carId"] +
+                    "</div>\n" +
+                    "                                            </td>\n" +
+                    "                                            <td colspan=\"1\">\n" +
+                    "                                                <div>" + val["workType"] +
+                    "</div>\n" +
+                    "                                            </td>\n" +
+                    "                                            <td colspan=\"1\">\n" +
+                    "                                                <div>" + val["workDate"] +
+                    "</div>\n" +
+                    "                                            </td>\n" +
+                    "                                            <td colspan=\"1\">\n" +
+                    "                                                <div><a target=\"_self\" href=\"http://127.0.0.1:8000/work/workdetail/" + val["id"] +
+                    "\">\n" +
+                    "                                                    查看详情\n" +
+                    "                                                </a></div>\n" +
+                    "                                            </td>\n" +
+                    "                                        </tr>"
+                ;$("#appeallist").append(card);
+            })
+            {# 上一页，下一页 #}
+            html = '';
+            if (result['pages'] > 1) {
+                if (result['page'] > 0) {
+                    html += '<a id="previous" href="javascript:void(0)" style="background: #000000;color:#ffffff" class="btn btn-default" οnmοuseοver="this.style.background=' + "'#ffffff';this.style.color=" + "'#000000'" + '" οnmοuseοut="this.style.background=' + "'#000000';this.style.color=" + "'#ffffff'" + '"  onclick="previous(' + result["page"] + ')">上一页</a>'
+                } else {
+                    html += '<a id="previous" href="javascript:void(0)" class="btn btn-default disabled" onclick="previous(' + result["page"] + ')">上一页</a>'
+                }
+
+                if (result['page'] + 1 < result['pages']) {
+                    html += '<a id="next" href="javascript:void(0)"  href="javascript:void(0)" style="background: #000000;color:#ffffff" class="btn btn-default" οnmοuseοver="this.style.background=' + "'#ffffff';this.style.color=" + "'#000000'" + '" οnmοuseοut="this.style.background=' + "'#000000';this.style.color=" + "'#ffffff'" + '" onclick="next(' + result["page"] + ')">下一页</a>';
+                } else {
+                    html += '<a id="next" href="javascript:void(0)"  class="btn btn-default disabled" onclick="next(' + result["page"] + ')">下一页</a>';
+                }
+            }
+            $(".tc-15-page").html(html);
+        }
+
+
+        $(document).ready(function () {
+            {# 搜索按钮点击事件 #}
+            $('#search').click(function () {
+                $.ajax({
+                    url: '/api/work_search/',
+                    type: 'GET',
+                    data: {"carid":$("#carid").val(),"worktype":$("#worktype").val(), "page": 0},
+                    dataType: 'JSON',
+                    success: function (result) {
+                        render(result)
+                    },
+                    error: function (result) {
+                        console.log("error: " + JSON.stringify(result));
+                    }
+                });
+            });
+        });
+        console.log();
+    </script>
+    <script>
+        $.ajax({
+            url: '/api/admin_info/',
+            type: 'GET',
+            data: {},
+            // headers: {'X-CSRFtoken': $.cookie('csrftoken') },
+            dataType: 'JSON',
+            success: function (result) {
+                $(".qc-user-name").eq(0).html("<em>" + result["data"]["username"] +
+                    "</em>");
+            },
+            error: function (result) {
+                console.log("error: " + JSON.stringify(result));
+            }
+
+        });
+    </script>
+
+    <link href="/static/homepage/css/global-201905061503.css" rel="stylesheet" data-role="global">
+    <link href="/static/homepage/css/bee.css" rel="stylesheet" data-role="global">
+    <link href="/static/homepage/css/break.css" rel="stylesheet" data-role="global">
+    <link href="/static/homepage/css/monitor-sdk.css" rel="stylesheet" data-role="global">
+    <link href="/static/homepage/css/tea-0.0.7.min.css" rel="stylesheet" data-role="global">
+    <link href="/static/homepage/images/favicon.png" rel="icon" type="image/x-icon">
+    <style>
+        .onfocus-item {
+            border: 1px solid #a5c7fe !important;
+        }
+
+        .container {
+            transform: none;
+            transition: none;
+            height: auto;
+        }
+
+        .container.animate {
+            transition: left 0.3s;
+            transform: translate3d(0, 0, 0);
+        }
+
+        [data-region-selector].tc-15-dropdown-in-hd .tc-15-dropdown-menu {
+            max-height: none;
+        }
+
+
+    </style>
+    <link charset="utf-8" rel="stylesheet" href="/static/homepage/css/account-center.css"
+          class="developer-css developer_index-css" disabled="">
+    <link charset="utf-8" rel="stylesheet" href="/static/homepage/css/global-mobile.import.css"
+          class="developer-css developer_index-css" disabled="">
+    <style type="text/css">@keyframes fade-in {
+                               0% {
+                                   opacity: 0
+                               }
+                               100% {
+                               }
+                           }
+
+    @-webkit-keyframes fade-in {
+        0% {
+            opacity: 0
+        }
+        100% {
+        }
+    }
+
+    @keyframes fade-out {
+        0% {
+        }
+        100% {
+            opacity: 0
+        }
+    }
+
+    @-webkit-keyframes fade-out {
+        0% {
+        }
+        100% {
+            opacity: 0
+        }
+    }
+
+    @keyframes modal-in {
+        0% {
+            opacity: 0;
+            transform: scale(0.8, 0.8);
+            -moz-transform: scale(0.8, 0.8);
+            -webkit-transform: scale(0.8, 0.8);
+            -ms-transform: scale(0.8, 0.8);
+        }
+        100% {
+        }
+    }
+
+    @-webkit-keyframes modal-in {
+        0% {
+            opacity: 0;
+            transform: scale(0.8, 0.8);
+            -moz-transform: scale(0.8, 0.8);
+            -webkit-transform: scale(0.8, 0.8);
+            -ms-transform: scale(0.8, 0.8);
+        }
+        100% {
+        }
+    }
+
+    @keyframes modal-out {
+        0% {
+        }
+        100% {
+            transform: scale(0.8, 0.8);
+            -moz-transform: scale(0.8, 0.8);
+            -webkit-transform: scale(0.8, 0.8);
+            -ms-transform: scale(0.8, 0.8);
+            opacity: 0
+        }
+    }
+
+    @-webkit-keyframes modal-out {
+        0% {
+        }
+        100% {
+            transform: scale(0.8, 0.8);
+            -moz-transform: scale(0.8, 0.8);
+            -webkit-transform: scale(0.8, 0.8);
+            -ms-transform: scale(0.8, 0.8);
+            opacity: 0
+        }
+    }
+
+    .mask-in {
+        animation: fade-in 0.2s;
+        -webkit-animation: fade-in 0.2s;
+    }
+
+    .mask-out {
+        animation: fade-out 0.2s;
+        -webkit-animation: fade-out 0.2s;
+    }
+
+    .modal-in {
+        animation: modal-in 0.15s;
+        -webkit-animation: modal-in 0.15s;
+    }
+
+    .modal-out {
+        animation: modal-out 0.15s;
+        -webkit-animation: modal-out 0.15s;
+    }
+
+    .fade-in {
+        animation: fade-in 0.3s;
+        -webkit-animation: fade-in 0.3s;
+    }
+
+    .fade-out {
+        animation: fade-out 0.3s;
+        -webkit-animation: fade-out 0.3s;
+    }
+
+    .error-page {
+        width: 800px;
+        text-align: center;
+        margin: 100px auto 0;
+        padding: 50px;
+        font-size: 18px;
+        line-height: 1.5;
+        color: #999;
+        border: 1px solid #e0e0e0;
+        background-color: #fff;
+    }
+
+    .error-page h2 {
+        font-size: 40px;
+        font-weight: bold
+    }</style>
+    <link charset="utf-8" rel="stylesheet" href="/static/homepage/css/auth.css" class="developer_index-css" disabled="">
+    <link charset="utf-8" rel="stylesheet" href="/static/homepage/css/msg-center.css"
+          class="message-css message_index-css" disabled="">
+    <style id="dynamic-inserted-css-tea-transition-scale150181594">
+        .tea-transition-scale150181594-enter {
+            opacity: 0 !important;
+            transform: scale3d(0.5, 0.5, 0.5);
+            transform-origin: center;
+        }
+
+        .tea-transition-scale150181594-enter-active {
+            opacity: 1 !important;
+            transform: scale3d(1, 1, 1);
+            transition: opacity 300ms ease,
+            transform 300ms ease;
+            transform-origin: center;
+        }
+
+        .tea-transition-scale150181594-exit {
+            opacity: 1 !important;
+            transform: scale3d(1, 1, 1);
+            transform-origin: center;
+        }
+
+        .tea-transition-scale150181594-exit-active {
+            opacity: 0 !important;
+            transform: scale3d(0.5, 0.5, 0.5);
+            transition: opacity 300ms ease,
+            transform 300ms ease;
+            transform-origin: center;
+        }
+    </style>
+    <style id="dynamic-inserted-css-tea-transition-slide-2068824837">
+        .tea-transition-slide-2068824837-enter {
+            opacity: 0 !important;
+            transform: translate3d(0px, -30px, 0);
+        }
+
+        .tea-transition-slide-2068824837-enter-active {
+            opacity: 1 !important;
+            transform: translate3d(0, 0, 0);
+            transition: opacity 300ms ease,
+            transform 300ms ease;
+        }
+
+        .tea-transition-slide-2068824837-exit {
+            opacity: 1 !important;
+            transform: translate3d(0, 0, 0);
+        }
+
+        .tea-transition-slide-2068824837-exit-active {
+            opacity: 0 !important;
+            transform: translate3d(0px, -30px, 0);
+            transition: opacity 300ms ease,
+            transform 300ms ease;
+        }
+    </style>
+    <link charset="utf-8" rel="stylesheet" href="/static/homepage/css/work-order.css" class="workorder-css">
+    <style type="text/css">
+        .tc-15-table-panel .text-center a {
+            vertical-align: baseline;
+        }
+    </style>
+</head>
+<body style="">
+<div id="pageWrapper">
+    <div class="qc-header-nav" id="topnav">
+        <div class="qc-header-inner">
+            <div class="qc-header-unit qc-header-logo">
+                <div class="qc-nav-logo">
+                    <a target="_blank" class="qc-logo-inner" href="http://127.0.0.1:8000/work/manage/" title="返回首页"
+                       data-hot="header.qcloudid" data-event="hot_tag_link">
+                        <span class="qc-logo-icon">返回首页</span>
+                    </a>
+                </div>
+                <div class="qc-nav-mobile-user" data-event="top_user_mobile">
+                    <a class="qc-mobile-user-inner" href="javascript:void(0);" data-hot="m.header.user">
+                        <i></i>
+                    </a>
+                </div>
+                <div class="qc-nav-mobile-menu" data-event="top_submenu_mobile" data-hot="m.header.product">
+                    <div class="qc-mobile-menu-inner">
+                        <span></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="qc-nav-service" data-event="top_submenu" data-menu-type="product" data-menu-inited="true"
+                 id="J-top_submenu">
+                <div class="qc-service-inner">
+                    <div class="qc-service-tool">
+                        <span style="cursor:default" class="qc-service-text" id="t_product">系统功能</span>
+                        <i class="qc-nav-arrows" style=""></i>
+                    </div>
+                    <div class="qc-service-menu" id="productService" style="height: 800px;">
+                        <div class="qc-service-menu-inner"><i class="qc-service-icon J-headerProductClose"
+                                                              id="J-headerProductClose"></i>
+                            <div class="menu-list-search J-headerProductSearchBar">
+                                <div class="menu-search-tool"><input type="text"
+                                                                     class="menu-search-input J-productSearchInput"
+                                                                     id="menu-search"
+                                                                     placeholder="通过名称/关键字查找">
+                                    <button type="button" class="menu-search-btn"></button>
+                                </div>
+                                <ul class="menu-search-result J-searchList" style=""></ul>
+                            </div>
+                            <div class="menu-list-all J-headerProductList">
+                                <div class="menu-list-col">
+                                    <div class="menu-area J-headerProductGroup">
+                                        <div id="product_list_title_0" class="menu-area-tit"><em>Group 1</em></div>
+                                        <div class="menu-area-con" aria-labelledby="product_list_title_0"
+                                             tabindex="0" role="list">
+                                            <div class="menu-item">
+                                                <div class="menu-item-tit"><a
+                                                        href="http://127.0.0.1:8000/work/worklist/"
+                                                        data-event="nav" title="作业管理"
+                                                        data-hot="header.navigation.internal.cvm"><span
+                                                        class="menu-item-text">作业管理</span></a></div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                </div>
+
+                                <div class="menu-list-col">
+                                    <div class="menu-area J-headerProductGroup">
+                                        <div id="product_list_title_22" class="menu-area-tit"><em>Group 2</em></div>
+                                        <div class="menu-area-con" aria-labelledby="product_list_title_22"
+                                             tabindex="0" role="list">
+                                            <div class="menu-item" data-nav="nav_ai_image_face_recognition"
+                                                 style="">
+                                                <div class="menu-item-tit"><a
+                                                        href="http://localhost:8080/FileManage/homepage_2"
+                                                        data-event="nav" title="统计系统"
+                                                        data-hot="header.navigation.internal.aiface"><span
+                                                        class="menu-item-text">统计系统</span></a></div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="qc-header-unit qc-header-user">
+                <!--user start-->
+                <div class="qc-nav-user" data-event="top_submenu" data-menu-type="user" id="userInfo"
+                     data-menu-inited="true">
+                    <div class="qc-user-inner"><i class="qc-user-icon"></i><span class="qc-user-name"
+                                                                                 data-hot="header.user.center"
+                                                                                 title="g7">g7</span><i
+                            class="qc-nav-arrows"></i>
+                        <div class="qc-user-info qc-user-panel">
+                            <div class="qc-user-panel-inner J-dropdownPanel"><a
+                                    href="http://127.0.0.1:8000/work/manage/" data-event="nav"
+                                    data-hot="header.user.developer">账号信息</a> <a
+                                    href="http://localhost:8080/FileManage/security" data-event="nav"
+                                    data-hot="header.user.security">安全设置</a> <a
+                                    href="http://127.0.0.1:8000/user/logout" data-event="logout">退出</a></div>
+                        </div>
+                    </div>
+                </div>
+                <!--user end-->
+            </div>
+
+            <div class="qc-header-unit  qc-header-account">
+                <!--account start-->
+
+                <!--account end-->
+
+                <!--workorder start-->
+
+                <!--workorder end-->
+            </div>
+            <div class="qc-header-unit  qc-header-tool">
+                <!--message start-->
+                <div class="qc-nav-message" data-event="top_submenu" id="message_trigger" data-menu-inited="true">
+                    <!--mobile message start-->
+                    <div class="qc-nav-mobile-message">
+                        <a href="http://localhost:8080/FileManage/message" data-event="nav" data-hot="m.header.message"
+                           class="J-msgLink">消息中心</a>
+                    </div>
+                    <!--mobile message- end-->
+                    <div class="qc-message-inner">
+                        <i class="qc-message-icon J-headerMsgIcon"><em style="visibility: hidden">0</em></i>
+                        <div class="qc-tool-message qc-tool-panel J-dropdownPanel" style="height: 750px;">
+                            <div class="qc-tool-inner" id="thisIsMsgCenter">
+                                <div class="qc-tool-head J-message-head"><h3 class="qc-tool-head-title">消息中心</h3><a
+                                        class="qc-tool-more" href="http://localhost:8080/FileManage/message"
+                                        data-event="nav" data-hot="header.message.more">查看更多</a><a
+                                        class="qc-tool-head-close J-closeMsgIcon"><i class="qc-close-panel"></i></a>
+                                </div>
+                                <div class="qc-tool-body J-message-body" style="height: 749px;">
+                                    <div class="qc-nav-message-list" id="message_list">
+                                        <div class="qc-tool-info">暂无未读消息</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--message end-->
+
+                <!--log start-->
+                <div class="qc-nav-log" data-event="top_submenu" id="operatelog_trigger"
+                     data-menu-inited="true">
+                    <!--mobile log start-->
+                    <div class="qc-nav-mobile-log">
+                        <a href="http://localhost:8080/FileManage/operatelog" data-event="nav"
+                           data-hot="m.header.operatelog">操作日志</a>
+                    </div>
+                    <!--mobile log end-->
+                    <div class="qc-log-inner">
+                        <i class="qc-log-icon J-headerLogIcon"></i>
+                        <div class="qc-tool-log qc-tool-panel J-dropdownPanel" style="height: 750px;">
+                            <div class="qc-tool-inner">
+                                <div class="qc-tool-head J-tool-head"><h3 class="qc-tool-head-title">最近操作</h3>        <a
+                                        class="qc-tool-more" href="http://localhost:8080/FileManage/cloudaudit"
+                                        data-event="nav" data-hot="header.operatelog.more">查看更多</a><a
+                                        class="qc-tool-head-close J-closeLogIcon" href="javascript:;"><i
+                                        class="qc-close-panel"></i></a></div>
+                                <div class="qc-tool-body J-operatelogList" style="height: 699px;">
+                                    <div class="qc-tool-info">暂无操作日志</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tip-msg-win floattips-container"></div>
+                </div>
+                <!--log end-->
+
+                <!--help start-->
+                <div class="qc-nav-help" data-event="top_submenu" id="help_trigger" data-menu-type="help"
+                     data-menu-inited="true">
+                    <!--mobile help start-->
+                    <div class="qc-nav-mobile-help">
+                        <a href="http://localhost:8080/FileManage/document/product" data-hot="m.header.document"
+                           target="_blank">帮助与文档<i class="menu-external-link"></i></a>
+                    </div>
+                    <!--mobile help end-->
+                    <div class="qc-help-inner">
+                        <i class="qc-help-icon J-headerHelpIcon"></i>
+                        <div class="qc-tool-help qc-tool-panel J-dropdownPanel" style="height: 750px;">
+                            <div class="qc-tool-inner J-headerHelpWrapper">
+                                <div class="qc-tool-head J-helper-head"><h3 class="qc-tool-head-title">帮助中心</h3>
+                                    <a class="qc-tool-head-close J-close-help-icon" href="javascript:;"><i
+                                            class="qc-close-panel"></i></a></div>
+                                <div class="qc-tool-body J-helper-body" style="height: 729px;">
+                                    <div class="qc-help-search-box"><input type="text" id="input_search_cont_help"
+                                                                           class="qc-help-search-cont"
+                                                                           placeholder="请输入您想了解或感兴趣的问题">
+                                        <button type="button" class="qc-help-search-btn"></button>
+                                    </div>
+                                    <div class="qc-question-list-wrap J-question-list">
+                                        <dl class="qc-question-list">
+                                            <dt>您可能需要</dt>
+                                            <dd><a class="external-link-help" data-type="2" target="_blank"
+                                                   href="#">常见操作指南</a>
+                                            </dd>
+                                            <dd><a class="external-link-help" data-type="2" target="_blank"
+                                                   href="#">登陆注册指引</a>
+                                            </dd>
+                                            <dd><a class="external-link-help" data-type="2" target="_blank"
+                                                   href="#">产品文档</a></dd>
+                                            <dd><a class="external-link-help" data-type="2" target="_blank"
+                                                   href="#">API文档</a>
+                                            </dd>
+                                        </dl>
+                                    </div>
+                                    <!-- <div class="qc-doc-video">      <ul class="J-video-list">          <li class="J-video-item">              <a class="qc-doc-video-box" href="https://www.qcloud.com/document/product" target="_blank">                  <img class="qc-doc-video-img" src="https://ask.qcloudimg.com/raw/qctrain/yehe-1932762cc356320/9xg6x4ak38.jpg?imageView2/format/jpg/q/80" data-video="//imgcache.qq.com/open_proj/proj_qcloud_v2/gateway/product/ugsv/css/img/demo/demo-1.mp4">                  <div class="qc-doc-video-title">云服务器配置介绍云服务器配置介绍</div>              </a>          </li>          <li class="J-video-item">              <a class="qc-doc-video-box" href="https://www.qcloud.com/document/product" target="_blank">                  <img class="qc-doc-video-img" src="https://ask.qcloudimg.com/raw/qctrain/yehe-1932762cc356320/9xg6x4ak38.jpg?imageView2/format/jpg/q/80">                  <div class="qc-doc-video-title">云服务器配置介绍</div>              </a>          </li>          <li class="J-video-item">              <a class="qc-doc-video-box" href="https://www.qcloud.com/document/product" target="_blank">                  <img class="qc-doc-video-img" src="https://ask.qcloudimg.com/raw/qctrain/yehe-1932762cc356320/9xg6x4ak38.jpg?imageView2/format/jpg/q/80">                  <div class="qc-doc-video-title">云服务器配置介绍</div>              </a>          </li>          <li class="J-video-item">              <a class="qc-doc-video-box" href="https://www.qcloud.com/document/product" target="_blank">                  <img class="qc-doc-video-img" src="https://ask.qcloudimg.com/raw/qctrain/yehe-1932762cc356320/9xg6x4ak38.jpg?imageView2/format/jpg/q/80">                  <div class="qc-doc-video-title">云服务器配置介绍</div>              </a>          </li>      </ul>      <a href="javascript:;" class="qc-doc-video-more">更多视频</a>  </div> -->
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--help end-->
+            </div>
+        </div>
+    </div>
+    <div class="container container-workorder" id="container" style="left: 0px;">
+        <div class="aside qc-aside-new" id="sidebar">
+            <div class="qc-aside-area">
+                <div class="qc-aside-area-main"><h2 class="qc-aside-headline"><img class="qc-aside-service-icon"
+                                                                                   src="/static/homepage/images/user.svg"><span>农机管理平台</span>
+                </h2>
+                    <ul class="qc-aside-list def-scroll keyboard-focus-obj">
+                        <li tabindex="0" data-nav-dropdown="1" data-nav="nav_serviceMigrate" style=""><a
+                                class="qc-aside-level-1 qc-aside-select" href="javascript:;"
+                                data-event="sidebar_accordion"><img
+                                class="qc-aside-icon" src="/static/homepage/images/developer.svg"><img
+                                class="qc-aside-icon qc-aside-icon-select"
+                                src="/static/homepage/images/developer(1).svg"><span>作业管理</span><i
+                                class="qc-aside-up-icon">开</i></a>
+                            <ul class="qc-aside-subitem" id="clerk">
+                                <li data-nav="nav_serviceMigrate" style=""><a class="qc-aside-level-2" data-event="nav"
+                                                                              href="http://127.0.0.1:8000/work/worklist/"
+                                                                              target="_self"><span>查看作业信息</span></a>
+                                </li>
+                                <li data-nav="nav_serviceMigrate" style=""><a class="qc-aside-level-2" data-event="nav"
+                                                                              href="http://127.0.0.1:8000/work/workroute/"
+                                                                              target="_self"><span>查看作业轨迹</span></a>
+                                </li>
+                                <li data-nav="nav_serviceMigrate" style=""><a class="qc-aside-level-2" data-event="nav"
+                                                                              href="http://127.0.0.1:8000/work/worklist/"
+                                                                              target="_self"><span>搜索作业</span></a>
+                                </li>
+
+                            </ul>
+                        </li>
+
+
+                        <li tabindex="0" data-nav-dropdown="1" data-nav="nav_serviceMigrate" style=""><a
+                                class="qc-aside-level-1" href="javascript:;" data-event="sidebar_accordion"><img
+                                class="qc-aside-icon" src="/static/homepage/images/cvm.svg"><img
+                                class="qc-aside-icon qc-aside-icon-select"
+                                src="/static/homepage/images/cvm(1).svg"><span>统计系统</span><i
+                                class="qc-aside-up-icon">开</i></a>
+                            <ul class="qc-aside-subitem" id="insert">
+                                <li data-nav="nav_serviceMigrate" style=""><a class="qc-aside-level-2" data-event="nav"
+                                                                              href="http://localhost:8080/FileManage/csm/cvm"
+                                                                              target="_self"><span>用户统计</span></a>
+                                </li>
+                                <li data-nav="nav_serviceMigrate" style=""><a class="qc-aside-level-2" data-event="nav"
+                                                                              href="http://localhost:8080/FileManage/csm/cvm"
+                                                                              target="_self"><span>内容统计</span></a>
+                                </li>
+
+
+                            </ul>
+
+                        </li>
+                        <li><a class="qc-aside-level-1" data-event="nav"
+                               href="http://127.0.0.1:8000/work/manage/" target="_self"><img
+                                class="qc-aside-icon" src="/static/homepage/images/developer.svg"><img
+                                class="qc-aside-icon qc-aside-icon-select"
+                                src="/static/homepage/images/developer(1).svg"><span>账号信息</span></a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="qc-menu-fold" data-event="toggle_sidebar" data-hot="sidebar.toggle.new"><i></i></div>
+            <div class="tc-15-bubble tc-15-bubble-bottom qc-menu-tip J-newSidebarToggleTip" style="display: none">
+                <div class="tc-15-bubble-inner">点击收起侧导航<a href="javascript:;" data-event="hideNewSidebarToggleTip"
+                                                          class="qc-menu-tip-close"></a></div>
+            </div>
+        </div>
+        <div class="main" id="appArea">
+            <div class="manage-area">
+                <div class="manage-area-title"><!----> <h2>
+                    作业搜索
+                </h2>
+
+                </div>
+                <div class="manage-area-main">
+                    <div class="tc-15-action-panel">
+                        <div class="input-group input-group-sm" style="position: relative;">
+                            <input type="text" class="form-control" name="carid" id="carid"
+                                   placeholder="搜索车辆编号"
+                                   style="width: 400px;height:30px;right: 130px;top: 15px;border-radius: 6px">
+                            <input type="text" class="form-control" name="worktype" id="worktype"
+                                   placeholder="搜索作业类型"
+                                   style="width: 400px;height:30px;right: 130px;top: 15px;border-radius: 6px">
+                            <button class="btn btn-default" id="search" type="button"
+                                    style="top: 30px;right: 180px;border-radius: 6px">搜索
+                            </button>
+                        </div>
+                        <div class="main-body">
+                            <div data-role="qc-table">
+                                <div class="tc-15-table-panel">
+                                    <div class="tc-15-table-fixed-head">
+                                        <table class="tc-15-table-box">
+                                            <colgroup><!----> <!---->
+                                                <col style="width: 20%;">
+                                                <col style="width: 20%;">
+                                                <col style="width: 20%;">
+                                                <col style="width: 20%;">
+                                                <col style="width: auto;">
+                                            </colgroup>
+                                            <thead>
+                                            <tr><!----> <!---->
+                                                <th class="text-left">
+                                                    <div><span class="tc-15-th-sort-btn current"> <span title="序号"
+                                                                                                        class="text-overflow">序号</span></span>
+                                                    </div>
+                                                    <i data-role="resizer" class="resize-line-icon"></i></th>
+                                                <th class="text-left">
+                                                    <div><span class="tc-15-th-sort-btn current"><span title="车辆编号"
+                                                                                                       class="text-overflow">车辆编号</span></span>
+                                                    </div>
+                                                    <i data-role="resizer" class="resize-line-icon"></i></th>
+                                                <th class="text-left">
+                                                    <div><span class="tc-15-th-sort-btn current"><span title="作业类型"
+                                                                                                       class="text-overflow">作业类型</span></span>
+                                                    </div>
+                                                    <i data-role="resizer" class="resize-line-icon"></i></th>
+                                                <th class="text-left">
+                                                    <div><span class="tc-15-th-sort-btn current"><span title="作业日期"
+                                                                                                       class="text-overflow">作业日期</span> <i
+                                                            class="up-sort-icon"></i></span></div>
+                                                    <i data-role="resizer" class="resize-line-icon"></i></th>
+                                                <th class="text-left">
+                                                    <div><!----> <!----> <span title="操作"
+                                                                               class="text-overflow">操作</span>
+                                                    </div> <!----></th>
+                                            </tr>
+                                            </thead>
+                                        </table>
+                                    </div>
+                                    <div class="tc-15-table-fixed-body"
+                                         style="min-height: 480px; height: auto; max-height: 540px;">
+                                        <table class="tc-15-table-box tc-15-table-rowhover"
+                                               style="min-width: 100%;">
+                                            <colgroup><!----> <!---->
+                                                <col style="width: 20%;">
+                                                <col style="width: 20%;">
+                                                <col style="width: 20%;">
+                                                <col style="width: 20%;">
+                                                <col style="width: auto;">
+                                            </colgroup>
+                                            <tbody id="appeallist">
+                                            </tbody>
+
+                                        </table>
+                                    </div>
+                                </div> <!----></div>
+                            <div data-role="qc-pagination" class="tc-15-page">
+                                <div class="tc-15-page-state">
+                                </div> <!---->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script>window.Promise = undefined;</script>
+
+    <script>
+
+        var bizWhitelist = {"fakeUin": {"console": [], "qcbuy": []}}
+    </script>
+
+    <div class="top-alert" id="topAlert" style="z-index: 1100; margin-left: -200px; display: none;"><span id="flashMsg"
+                                                                                                          class="top-alert-icon-doing fade-out"
+                                                                                                          style="display: none;"></span>
+    </div>
+</div>
+</body>
+</html>
